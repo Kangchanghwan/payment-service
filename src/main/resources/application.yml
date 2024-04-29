@@ -1,0 +1,12 @@
+spring:
+  r2dbc:
+    username: root
+    password: password
+    url: r2dbc:mysql://localhost:3306/test
+
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  thymeleaf:
+    cache: false
