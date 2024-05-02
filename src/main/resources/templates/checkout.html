@@ -1,0 +1,23 @@
+<head>
+    <meta charset="utf-8" />
+    <title>결제하기</title>
+    <!-- 1. 스크립트 추가 -->
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+<body>
+<script>
+    var clientKey = 'test_ck_LkKEypNArWJRgnYx7EBlVlmeaxYG' // 테스트용 클라이언트 키
+    // 2. 결제창 SDK 초기화
+    var tossPayments = TossPayments(clientKey)
+    const generateRandomString = () => window.btoa(Math.random()).slice(0, 20);
+
+    tossPayments.requestPayment('카드', {
+        amount: 15000,
+        orderId: generateRandomString(),
+        orderName: '토스 티셔츠 외 2건',
+        customerName: '박토스',
+        successUrl: 'http://localhost:8080/success',
+        failUrl: 'http://localhost:8080/fail',
+    })
+</script>
+</body>
