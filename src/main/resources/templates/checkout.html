@@ -19,5 +19,13 @@
         successUrl: 'http://localhost:8080/success',
         failUrl: 'http://localhost:8080/fail',
     })
+    /*<!CDATA[*/
+    const orderId = `[[${orderId}]]`
+    const orderName = `[[${orderName}]]`
+    const amount = `[[${amount}]]`
+    /*]]>*/
+    console.log("orderId: " + orderId)
+    console.log("orderName: " + orderName)
+    console.log("amount: " + amount)
 </script>
 </body>
