@@ -6,7 +6,7 @@ CREATE TABLE payment_events ( -- 사용자가 구매하기 버튼을 클랙했�
     order_id varchar(255) UNIQUE, --결제를 구분하는 주문 식별자
     type ENUM('NORMAL') NOT NULL, -- 결재 유형 ex)일반결제, 자동결제
     order_name VARCHAR(255) NOT NULL , --결재 주문 이름
-    method ENUM('EASY_PAY'), -- 결재방법 ex) 카드결재, 간편결재
+    method ENUM('CARD'), -- 결재방법 ex) 카드결재, 간편결재
     psp_raw_data JSON, --PSP 결재 승인 후에 받는 응답데이터 추후 분석,환불 관리용
     approved_at DATETIME, --결재 승인 시각
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 생성시각
@@ -35,7 +35,7 @@ CREATE TABLE payment_order_histories( --결제주문의 상태 변화를 기록�
     id BIGINT AUTO_INCREAMENT PRIMARY KEY, --식별자
     payment_order_id BIGINT NOT NULL, -- 주문결재번호 참조식별자
     previous_status ENUM('NOT_STARTED', 'EXECUTING', 'FAILURE', 'UNKNOWN'), -- 변경전 주문상태
-    new_status ENUM('NOT_STARTED', 'EXECUTING', 'FAILURE', 'UNKNOWN'), -- 변경 후 주문상태
+    new_status ENUM('NOT_STARTED', 'EXECUTING', 'FAILURE', 'SUCCESS', 'UNKNOWN'), -- 변경 후 주문상태
     create_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 생성시각
     changed_by VARCHAR(255), -- 변경을 수행한 사용자
     reason VARCHAR(255), -- 상태변화의 이유

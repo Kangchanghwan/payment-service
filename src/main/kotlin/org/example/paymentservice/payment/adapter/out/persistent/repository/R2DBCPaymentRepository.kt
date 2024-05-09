@@ -1,7 +1,8 @@
-package org.example.paymentservice.payment.adapter.out.repository
+package org.example.paymentservice.payment.adapter.out.persistent.repository
 
 import org.example.paymentservice.payment.domain.PaymentEvent
 import org.springframework.r2dbc.core.DatabaseClient
+import org.springframework.r2dbc.core.bind
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Mono
@@ -13,9 +14,9 @@ class R2DBCPaymentRepository(
     private val transactionOperators: TransactionalOperator
 ) : PaymentRepository {
     override fun save(paymentEvent: PaymentEvent): Mono<Void> {
-        return insertPaymentEvent(paymentEvent)
-            .flatMap { selectPaymentEventId() }
-            .flatMap { paymentEventId -> insertPaymentOrders(paymentEvent, paymentEventId) }
+        return insertPaymentEvent(paymentEvent) // 결제 이벤트를 저장합니다.
+            .flatMap { selectPaymentEventId() } // 마지막으로 생성된 이벤트 ID 값을 가져옵니다.
+            .flatMap { paymentEventId -> insertPaymentOrders(paymentEvent, paymentEventId) } // 결제 이벤트 아이디를 외래키로 가진 결제주문 건을 생성합니다.
             .`as` { transactionOperators.transactional(it) } // 트랜젝션을 묶는 역할
             .then()
     }
@@ -52,8 +53,8 @@ class R2DBCPaymentRepository(
         """.trimIndent()
 
         val LAST_INSERT_ID_QUERY = """
-            SELECT LAST_INSERT_ID()
-        """.trimIndent()
+            SELECT LAST_INSERT_ID() 
+        """.trimIndent() // LAST_INSERT_ID()는 MySQL에서 사용되는 함수이며
 
         val INSERT_PAYMENT_ORDER_QUERY = fun(valueClauses: String) = """
             INSERT INTO payment_orders(payment_event_id, seller_id, order_id, product_id, amount, payment_order_status)
