@@ -1,6 +1,6 @@
 package org.example.paymentservice.payment.application.port.out
 
-import org.example.paymentservice.payment.domain.PaymentExecutionFailure
+import org.example.paymentservice.payment.domain.PaymentFailure
 import org.example.paymentservice.payment.domain.PaymentExtraDetails
 import org.example.paymentservice.payment.domain.PaymentStatus
 
@@ -9,7 +9,7 @@ data class PaymentStatusUpdateCommand(
     val orderId: String,
     val status:PaymentStatus,
     val extraDetails: PaymentExtraDetails? = null,
-    val failure: PaymentExecutionFailure? = null
+    val failure: PaymentFailure? = null
 ){
     init {
         require(status == PaymentStatus.SUCCESS || status== PaymentStatus.FAILURE || status == PaymentStatus.UNKNOWN){

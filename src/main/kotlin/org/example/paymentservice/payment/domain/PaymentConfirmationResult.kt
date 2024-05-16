@@ -1,10 +1,8 @@
 package org.example.paymentservice.payment.domain
 
-import org.example.paymentservice.payment.adapter.out.web.toss.repsonse.Failure
-
 data class PaymentConfirmationResult (
     val status: PaymentStatus,
-    val failure: PaymentExecutionFailure? = null
+    val failure: PaymentFailure? = null
 ){
     init {
         if(status == PaymentStatus.FAILURE){
