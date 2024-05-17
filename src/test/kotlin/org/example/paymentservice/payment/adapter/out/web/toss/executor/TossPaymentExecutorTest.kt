@@ -20,9 +20,6 @@ class TossPaymentExecutorTest(
     @Autowired private val pspTestWebClientConfiguration: PSPTestWebClientConfiguration
 ) {
 
-    @Autowired
-    private lateinit var tossPaymentExecutor: TossPaymentExecutor
-
     @Test
     fun `should handle various TossPaymentError scenarios`() {
         generateErrorScenarios().forEach{

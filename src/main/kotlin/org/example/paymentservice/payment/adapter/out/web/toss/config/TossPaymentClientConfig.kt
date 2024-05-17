@@ -40,9 +40,9 @@ class TossPaymentClientConfig(
         val provider = ConnectionProvider.builder("toss-payment").build()
 
         val clientBase = HttpClient.create(provider)
-            .doOnConnected{
+            .doOnConnected{ // 연결 후
                 it.addHandlerLast(ReadTimeoutHandler(30, TimeUnit.SECONDS))
-            }
+            } // 읽기지연 타임아웃 발생 핸들러 추가.
 
         return ReactorClientHttpConnector(clientBase)
     }

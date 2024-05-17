@@ -32,7 +32,8 @@ class PaymentConfirmServiceTest(
     @Autowired private val checkOutUseCase: CheckOutUseCase,
     @Autowired private val paymentStatusUpdatePort: PaymentStatusUpdatePort,
     @Autowired private val paymentValidationPort: PaymentValidationPort,
-    @Autowired private val paymentDatabaseHelper: PaymentDatabaseHelper
+    @Autowired private val paymentDatabaseHelper: PaymentDatabaseHelper,
+    @Autowired private val paymentErrorHandler: PaymentErrorHandler,
 ){
     private val mockPaymentExecutorPort = mockk<PaymentExecutionPort>()
 
@@ -62,7 +63,8 @@ class PaymentConfirmServiceTest(
         val paymentConfirmService = PaymentConfirmService(
             paymentStatusUpdatePort = paymentStatusUpdatePort,
             paymentValidationPort = paymentValidationPort,
-            paymentExecutionPort = mockPaymentExecutorPort
+            paymentExecutionPort = mockPaymentExecutorPort,
+            paymentErrorHandler = paymentErrorHandler
         )
 
         val paymentExecutionResult = PaymentExecutionResult(
@@ -117,7 +119,8 @@ class PaymentConfirmServiceTest(
         val paymentConfirmService = PaymentConfirmService(
             paymentStatusUpdatePort = paymentStatusUpdatePort,
             paymentValidationPort = paymentValidationPort,
-            paymentExecutionPort = mockPaymentExecutorPort
+            paymentExecutionPort = mockPaymentExecutorPort,
+            paymentErrorHandler = paymentErrorHandler
         )
 
         val paymentExecutionResult = PaymentExecutionResult(
@@ -163,7 +166,8 @@ class PaymentConfirmServiceTest(
         val paymentConfirmService = PaymentConfirmService(
             paymentStatusUpdatePort = paymentStatusUpdatePort,
             paymentValidationPort = paymentValidationPort,
-            paymentExecutionPort = mockPaymentExecutorPort
+            paymentExecutionPort = mockPaymentExecutorPort,
+            paymentErrorHandler = paymentErrorHandler
         )
 
         val paymentExecutionResult = PaymentExecutionResult(
@@ -209,7 +213,8 @@ class PaymentConfirmServiceTest(
         val paymentConfirmService = PaymentConfirmService(
             paymentStatusUpdatePort = paymentStatusUpdatePort,
             paymentValidationPort = paymentValidationPort,
-            paymentExecutionPort = mockPaymentExecutorPort
+            paymentExecutionPort = mockPaymentExecutorPort,
+            paymentErrorHandler = paymentErrorHandler
         )
 
         val pspConfirmationException = PSPConfirmationException(
@@ -226,7 +231,7 @@ class PaymentConfirmServiceTest(
         val paymentConfirmResult = paymentConfirmService.confirm(paymentConfirmCommand).block()!!
         val paymentEvent = paymentDatabaseHelper.getPayments(orderId)!!
         assertThat(paymentConfirmResult.status).isEqualTo(PaymentStatus.FAILURE)
-        assertTrue(paymentEvent.isSuccess())
+        assertTrue(paymentEvent.isFailure())
     }
     @Test
     fun `should handle PaymentValidationException`(){
@@ -251,7 +256,8 @@ class PaymentConfirmServiceTest(
         val paymentConfirmService = PaymentConfirmService(
             paymentStatusUpdatePort = paymentStatusUpdatePort,
             paymentValidationPort = mockPaymentValidationPort,
-            paymentExecutionPort = mockPaymentExecutorPort
+            paymentExecutionPort = mockPaymentExecutorPort,
+            paymentErrorHandler = paymentErrorHandler
         )
 
         every { mockPaymentValidationPort.isValid(orderId, paymentConfirmCommand.amount) } returns Mono.error(PaymentValidationException("결재 유효성 검증에 실패하였습니다."))

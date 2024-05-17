@@ -4,7 +4,6 @@ import org.example.paymentservice.payment.adapter.out.persistent.exception.Payme
 import org.example.paymentservice.payment.application.port.out.PaymentStatusUpdateCommand
 import org.example.paymentservice.payment.domain.PaymentStatus
 import org.springframework.r2dbc.core.DatabaseClient
-import org.springframework.r2dbc.core.bind
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Flux
@@ -128,7 +127,7 @@ class R2DBCPaymentStatusUpdateRepository(
     private fun updatePaymentStatusToUnknown(command: PaymentStatusUpdateCommand): Mono<Boolean> {
         return selectPaymentOrderStatus(command.orderId)
             .collectList()
-            .flatMap { insertPaymentHistory(it, command.status, "UNKNOWN") }
+            .flatMap { insertPaymentHistory(it, command.status, command.failure.toString()) }
             .flatMap { updatePaymentOrderStatus(command.orderId, command.status) }
             .flatMap { incrementPaymentOrderFailedCount(command) }
             .`as`(transactionalOperator::transactional)
